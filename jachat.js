@@ -1,14 +1,15 @@
-var express = require('express');
-var app = express();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+const express = require('express');
+const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+const PORT = process.env.PORT || 2000;
 
 //APP
 app.get('/',function(req,res){
 	res.sendFile(__dirname + '/interface/index.html');
 });
 app.use('/interface',express.static(__dirname + '/interface'));
-server.listen(2000,function(){console.log("Listening to port")});
+server.listen(PORT,function(){console.log('Listening on ${ PORT }')});
 
 
 //SOCKET
