@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+    <head>
+	    <title>Jay Angue Chat</title>
+		<script src="./interface/socket-io-client.js"></script>
+    </head>
+    <body><div style="text-align:center;">
+        <h1>Jay Angue Chat</h1>
+		
+		<div style="display:inline-block; text-align: left; background-color:blue; height: 200px; width: 500px; padding:10px; overflow-x:scroll; overflow-y:scroll;">
+			<div  id="chat_main_holder" style="height:6000px; width:5000px;" ></div>
+		</div>
+		<br>
+		<div style="display:inline-block; background-color:red; margin: 20px; padding:40px height: 100px; width: 300px; ">
+			<text style="padding-top:20px;" >Name</text>
+			<br>
+			<input id="chat_name" style="width:200px;" ></input>
+			<br>
+			<text>Message</text>
+			<br>
+			<textarea id="chat_message" style="margin-top:10px; height:50px; width:200px; "></textarea>
+			<br>
+			<button style="margin-top:10px" onclick="sendmessage();">Send Message</button>
+		</div>
+
+		<script>
+			const socket = io();
+			var CHATBANK = [];
+			
+			
+			function sendmessage(){
+				var chatname = document.getElementById("chat_name").value;
+				var chatmessage = document.getElementById("chat_message").value;
+			
+				//SEND MESSAGE
+				socket.emit('chat-message',{name:chatname, message:chatmessage});
+				
+				console.log("emit");
+				
+			};
+		
+			
+			socket.on('chat-bank',function(data){
+				//console.log(data);
+				if(CHATBANK.length < data.length){
+					//DELETE OLDER MESSAGES
+					var chatmainholder = document.getElementById("chat_main_holder");
+					while(chatmainholder.hasChildNodes()){
+						chatmainholder.removeChild(chatmainholder.firstChild);
+					};
+
+					for (var i in data){
+						var currentmessage = data[i];
+						//ADD NEW MESSAGES
+						var chatholder = document.createElement("P");
+						var temp_chatdata = currentmessage.name + " : " + currentmessage.message;
+						chatholder.innerHTML = temp_chatdata;
+						chatmainholder.appendChild(chatholder);
+
+					};
+				};
+				
+				CHATBANK = data;
+			});
+
+		</script>
+	</div></body>
+</html>
